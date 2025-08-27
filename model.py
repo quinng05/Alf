@@ -10,7 +10,7 @@ def set_cuda_model(gpu):
 
 # check for CUDA 
 def set_model():
-    if(torch.has_cuda):
+    if(torch.backends.cuda.is_built()):
         print("Machine has CUDA -")
         print("GPU: ", torch.cuda.get_device_name(0))
         set_cuda_model(torch.cuda.get_device_name(0))
