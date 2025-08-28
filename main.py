@@ -5,27 +5,26 @@ from pynput import keyboard
 from model import set_model 
 
 
-# Set FasterWhisper model
+# ---- Set FasterWhisper model ----
 this_model = set_model()
 print("Current FW Model: ", this_model)
 
 
-# Audio streaming config
+# ---- Audio streaming config ----
 SR = 16000      # 16 kHz sample rate
 FRAME_MS = 20   # 20 ms audio frames
 FRAME_SAMPLES = SR * FRAME_MS // 1000       # Number of samples in each frame 
 WINDOW_SEC = 1.0     # Streaming buffer window
 TICK = 0.25     # Transcription call tick speed
 
-
-# State
+# ---- State ----
 recording = False   # Audio recording bool
 q = queue.Queue()   # Audio queue 
 stop_flag = False   # Transcription thread bool
-last_print = ""
-buf = b""
-max_bytes = int(SR * WINDOW_SEC) * 2
-last_tick = 0.0
+last_print = ""     # Last transcript string shown in console
+buf = b""           # Rolling buffer of raw PCM bytes to fill window on each tick
+max_bytes = int(SR * WINDOW_SEC) * 2        # Max bytes allotted to buf (PCM = 2 bytes per sample)
+last_tick = 0.0     # Tracks last Whisper call (last tick)
 
 
 def start_recording():
