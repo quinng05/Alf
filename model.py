@@ -19,9 +19,6 @@ def set_model():
         print("Fetching FW model 'small' ...")
         return WhisperModel("small.en", device="cpu", compute_type="int8")
     
-
-
-# MONOLOGUE
       
 
 

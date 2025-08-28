@@ -4,14 +4,29 @@ import webrtcvad
 from pynput import keyboard
 from model import set_model 
 
-ppid = os.getppid()
-parent = subprocess.check_output(["ps", "-o", "comm=", "-p", str(ppid)])
-print("Parent process:", parent.decode().strip())
-          
+
+# Set FasterWhisper model
 this_model = set_model()
 print("Current FW Model: ", this_model)
 
-recording = False
+
+# Audio streaming config
+SR = 16000      # 16 kHz sample rate
+FRAME_MS = 20   # 20 ms audio frames
+FRAME_SAMPLES = SR * FRAME_MS // 1000       # Number of samples in each frame 
+WINDOW_SEC = 1.0     # Streaming buffer window
+TICK = 0.25     # Transcription call tick speed
+
+
+# State
+recording = False   # Audio recording bool
+q = queue.Queue()   # Audio queue 
+stop_flag = False   # Transcription thread bool
+last_print = ""
+buf = b""
+max_bytes = int(SR * WINDOW_SEC) * 2
+last_tick = 0.0
+
 
 def start_recording():
     global recording
