@@ -16,14 +16,13 @@ def set_model():
         set_cuda_model(torch.cuda.get_device_name(0))
     else:
         print("No CUDA")
+        print("Fetching FW model 'small' ...")
         return WhisperModel("small.en", device="cpu", compute_type="int8")
     
 
 
 # MONOLOGUE
-
-model = set_model()
-print("Model loaded: ", model)
+      
 
 
 

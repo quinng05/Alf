@@ -1,8 +1,13 @@
-import os
+import sys, os, subprocess, time, threading, queue, numpy as np
+import sounddevice as sd
+import webrtcvad
 from pynput import keyboard
-import time
 from model import set_model 
 
+ppid = os.getppid()
+parent = subprocess.check_output(["ps", "-o", "comm=", "-p", str(ppid)])
+print("Parent process:", parent.decode().strip())
+          
 this_model = set_model()
 print("Current FW Model: ", this_model)
 
@@ -30,7 +35,12 @@ def on_release(key):
     elif key == keyboard.Key.esc:
         return False
 
-listener = keyboard.Listener(on_press=on_press, on_release=on_release)
+listener = keyboard.Listener(
+    on_press=on_press,
+    on_release=on_release,
+    suppress=True  
+)
+
 listener.start()
 
 print("Hold SPACEBAR to record. Press ESC to exit.")
